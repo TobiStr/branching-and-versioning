@@ -1,8 +1,8 @@
-name: Weekly Branch Deletion Check
+name: 🤖 Weekly Branch Deletion Check
 
 on:
   schedule:
-    - cron: '0 2 * * 1' # Every Monday at 2:00 AM UTC
+    - cron: "0 2 * * 1" # Every Monday at 2:00 AM UTC
   workflow_dispatch:
 
 permissions:
@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 env:
-  STALE_AFTER_DAYS: 365  # You can change this to configure the "stale after" threshold
+  STALE_AFTER_DAYS: 365 # You can change this to configure the "stale after" threshold
 
 jobs:
   check-branches:
