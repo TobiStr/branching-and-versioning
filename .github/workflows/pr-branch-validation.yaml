@@ -1,11 +1,11 @@
-name: PR Branch Validation
+name: Is PR allowed
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  validate-pr-branches:
+  check-source-and-target-branch-names:
     runs-on: ubuntu-latest
     env:
       PR_RULES: |
