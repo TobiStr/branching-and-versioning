@@ -150,8 +150,6 @@ branches:
     is-main-branch: false
 ignore:
   sha: []
-  branches: 
-    - develop
 mode: ContinuousDelivery
 label: "{BranchName}"
 increment: Inherit
