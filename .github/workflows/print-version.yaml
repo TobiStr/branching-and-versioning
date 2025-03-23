@@ -1,4 +1,4 @@
-name: Print Version
+name: 🤖 Print Version
 
 on:
   push:

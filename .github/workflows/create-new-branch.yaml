@@ -1,4 +1,4 @@
-name: Create Branch
+name: 🧑‍💻 Create new Branch
 
 on:
   workflow_dispatch:

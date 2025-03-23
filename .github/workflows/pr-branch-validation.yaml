@@ -1,4 +1,4 @@
-name: Is PR allowed
+name: 🤖 Is PR Allowed
 
 on:
   pull_request:

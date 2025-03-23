@@ -1,4 +1,4 @@
-name: Calculate the current Version
+name: ⚙️ Calculate the current Version
 
 on:
   workflow_call:
@@ -34,7 +34,7 @@ jobs:
         uses: gittools/actions/gitversion/execute@v3.1.11
         with:
           useConfigFile: true
-          configFilePath: 'GitVersion.yml'
+          configFilePath: "GitVersion.yml"
 
       - name: Print Version to Summary
         run: |
