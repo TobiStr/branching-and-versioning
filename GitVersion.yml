@@ -12,12 +12,10 @@ merge-message-formats: {}
 update-build-number: true
 semantic-version-format: Strict
 strategies:
-  - Fallback
   - ConfiguredNextVersion
   - MergeMessage
   - TaggedCommit
   - TrackReleaseBranches
-  - VersionInBranchName
 branches:
   develop:
     mode: ContinuousDelivery
@@ -107,17 +105,16 @@ branches:
     is-source-branch-for: []
     pre-release-weight: 30000
   hotfix:
-    mode: ManualDeployment
-    label: beta
-    increment: Inherit
+    mode: ContinuousDelivery
+    label: QA
+    increment: Patch
     prevent-increment:
       when-current-commit-tagged: false
     regex: ^hotfix(es)?[/-](?<BranchName>.+)
     source-branches:
       - main
-      - support
     is-source-branch-for: []
-    is-release-branch: true
+    is-release-branch: false
     is-main-branch: false
     pre-release-weight: 30000
   support:
