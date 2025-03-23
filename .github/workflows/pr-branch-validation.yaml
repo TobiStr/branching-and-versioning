@@ -1,0 +1,51 @@
+name: PR Branch Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-pr-branches:
+    runs-on: ubuntu-latest
+    env:
+      PR_RULES: |
+        develop:main,feature/*
+        feature/*:develop,feature/*
+        release/*:develop,fix/*
+        main:release/*,hotfix/*
+    steps:
+      - name: Validate PR branch rules
+        run: |
+          BASE="${{ github.event.pull_request.base.ref }}"
+          HEAD="${{ github.event.pull_request.head.ref }}"
+
+          echo "Base branch: $BASE"
+          echo "Head branch: $HEAD"
+          
+          is_valid=false
+
+          echo "${PR_RULES}" | while IFS= read -r line; do
+            target="${line%%:*}"
+            sources="${line#*:}"
+
+            # Convert wildcard to regex
+            target_regex="^${target//\*/.*}$"
+
+            if [[ "$BASE" =~ $target_regex ]]; then
+              IFS=',' read -ra source_array <<< "$sources"
+              for s in "${source_array[@]}"; do
+                source_regex="^${s//\*/.*}$"
+                if [[ "$HEAD" =~ $source_regex ]]; then
+                  is_valid=true
+                  break 2
+                fi
+              done
+            fi
+          done
+
+          if [ "$is_valid" = false ]; then
+            echo "❌ This PR from '$HEAD' into '$BASE' is not allowed by branch rules."
+            exit 1
+          else
+            echo "✅ Branch rule passed."
+          fi
