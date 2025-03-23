@@ -21,7 +21,7 @@ strategies:
 branches:
   develop:
     mode: ContinuousDelivery
-    label: alpha
+    label: INT
     increment: Minor
     prevent-increment:
       when-current-commit-tagged: false
@@ -55,7 +55,7 @@ branches:
     pre-release-weight: 55000
   release:
     mode: ContinuousDelivery
-    label: beta
+    label: QA
     increment: None
     prevent-increment:
       of-merged-branch: true
@@ -72,7 +72,7 @@ branches:
     pre-release-weight: 30000
   feature:
     mode: ManualDeployment
-    label: "{BranchName}"
+    label: "TEST-{BranchName}"
     increment: Inherit
     prevent-increment:
       when-current-commit-tagged: false
