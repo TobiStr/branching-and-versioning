@@ -29,7 +29,7 @@ branches:
     source-branches:
       - main
     is-source-branch-for: []
-    tracks-release-branches: true
+    tracks-release-branches: false
     is-release-branch: false
     is-main-branch: false
     pre-release-weight: 0
@@ -41,7 +41,7 @@ branches:
       of-merged-branch: false
       when-current-commit-tagged: false
     track-merge-message: true
-    track-merge-target: true
+    track-merge-target: false
     regex: ^master$|^main$
     source-branches:
       - release
@@ -150,6 +150,8 @@ branches:
     is-main-branch: false
 ignore:
   sha: []
+  branches: 
+    - develop
 mode: ContinuousDelivery
 label: "{BranchName}"
 increment: Inherit
