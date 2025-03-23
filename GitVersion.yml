@@ -38,7 +38,7 @@ branches:
   main:
     label: ""
     increment: Patch
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     prevent-increment:
       of-merged-branch: false
       when-current-commit-tagged: false
