@@ -1,0 +1,12 @@
+name: Print Version
+
+on:
+  push:
+    branches:
+      - "feature/*"
+      - "hotfix/*"
+
+jobs:
+  determine-version:
+    name: Determine Semantic Version
+    uses: ./.github/workflows/get-semantic-version.yaml
