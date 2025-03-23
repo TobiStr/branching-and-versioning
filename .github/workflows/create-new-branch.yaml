@@ -3,10 +3,6 @@ name: Create Branch
 on:
   workflow_dispatch:
     inputs:
-      source_branch:
-        description: "Base branch to branch from"
-        required: false
-        default: "develop"
       branch_type:
         description: "Type of the new branch (feature, release, fix, hotfix)"
         required: false
@@ -74,7 +70,7 @@ jobs:
       - name: Create new branch
         run: |
           NEW_BRANCH="${{ steps.generate.outputs.branch_name }}"
-          BASE="${{ github.event.inputs.source_branch }}"
+          BASE="${{ github.ref_name }}"
 
           echo "Creating branch '$NEW_BRANCH' from '$BASE'..."
 
