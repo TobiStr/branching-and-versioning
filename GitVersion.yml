@@ -65,7 +65,6 @@ branches:
     source-branches:
       - main
       - develop
-      - fix
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
