@@ -63,6 +63,7 @@ branches:
     source-branches:
       - main
       - develop
+      - hotfix
     is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
@@ -110,9 +111,10 @@ branches:
     increment: Patch
     prevent-increment:
       when-current-commit-tagged: false
-    regex: ^hotfix(es)?[/-](?<BranchName>.+)
+    regex: ^(hotfix(es)?|fix)[/-](?<BranchName>.+)
     source-branches:
       - main
+      - release
     is-source-branch-for: []
     is-release-branch: false
     is-main-branch: false
