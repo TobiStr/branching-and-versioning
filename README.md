@@ -6,27 +6,28 @@ This repository demonstrates a **custom GitVersion setup** to support a structur
 
 ## 🔀 Branching Strategy
 
+The branching strategy is based on the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) model. Automatic versioning is realized through [GitVersion](https://gitversion.net/).
 
 ### ➡️ Branch Types and Their Version Labels
 
-| Branch Type     | Example Name           | Version Format         | Description                                      |
-|-----------------|------------------------|-------------------------|--------------------------------------------------|
-| `main`          | `main`                 | `1.0.0`                 | Production-ready releases, tagged with full semantic versions. |
-| `develop`       | `develop`              | `1.1.0-INT`             | Integration branch, minor version bumps, pre-release `INT`. |
-| `feature`       | `feature/xyz`          | `1.1.0-TEST-xyz`        | Feature branches, inherit from develop or main, custom TEST label. |
-| `release`       | `release/1.1.0`        | `1.1.0-QA`              | Candidate for production, tagged with QA label. |
-| `hotfix`        | `hotfix/urgent-fix`    | `1.0.1-QA`              | Patch releases off of `main`. |
-| `support`       | `support/legacy`       | `1.0.1`                 | Maintenance on older versions. |
-| `pull-request`  | `pr/123`               | `1.1.0-PullRequest.123` | Preview versions for PR builds. |
+| Branch Type    | Example Name        | Version Format          | Description                                                        |
+| -------------- | ------------------- | ----------------------- | ------------------------------------------------------------------ |
+| `main`         | `main`              | `1.0.0`                 | Production-ready releases, tagged with full semantic versions.     |
+| `develop`      | `develop`           | `1.1.0-INT`             | Integration branch, minor version bumps, pre-release `INT`.        |
+| `feature`      | `feature/xyz`       | `1.1.0-TEST-xyz`        | Feature branches, inherit from develop or main, custom TEST label. |
+| `release`      | `release/1.1.0`     | `1.1.0-QA`              | Candidate for production, tagged with QA label.                    |
+| `hotfix`       | `hotfix/urgent-fix` | `1.0.1-QA`              | Patch releases off of `main`.                                      |
+| `support`      | `support/legacy`    | `1.0.1`                 | Maintenance on older versions.                                     |
+| `pull-request` | `pr/123`            | `1.1.0-PullRequest.123` | Preview versions for PR builds.                                    |
 
 ---
 
 ## 🔁 Merge Flow
 
-1. **Production Release**: `release/* ➜ main`  
-2. **Post-Release Development**: `main ➜ develop`  
+1. **Production Release**: `release/* ➜ main`
+2. **Post-Release Development**: `main ➜ develop`
    - Bumps **minor** version for the next dev cycle.
-3. **Feature Integration**: `feature/* ➜ develop`  
+3. **Feature Integration**: `feature/* ➜ develop`
 4. **Release Creation**: `develop ➜ release/*`
 
 ---
@@ -67,13 +68,13 @@ GitVersion is configured with the following key options:
 
 ## 📦 Example Versions
 
-| Action                                  | Version Outcome        |
-|----------------------------------------|------------------------|
-| Tag on `main`                          | `1.0.0`                |
-| Merge `main ➜ develop`                 | `1.1.0-INT`            |
-| Create `feature/awesome-ui` from dev   | `1.1.0-TEST-awesome-ui`|
-| Merge `develop ➜ release/1.1.0`        | `1.1.0-QA`             |
-| Merge `release/1.1.0 ➜ main`           | `1.1.0`                |
+| Action                               | Version Outcome         |
+| ------------------------------------ | ----------------------- |
+| Tag on `main`                        | `1.0.0`                 |
+| Merge `main ➜ develop`               | `1.1.0-INT`             |
+| Create `feature/awesome-ui` from dev | `1.1.0-TEST-awesome-ui` |
+| Merge `develop ➜ release/1.1.0`      | `1.1.0-QA`              |
+| Merge `release/1.1.0 ➜ main`         | `1.1.0`                 |
 
 ---
 
@@ -84,6 +85,7 @@ GitVersion is configured with the following key options:
 - Git tags representing semantic releases.
 - Automatic github workflows, that tag each push to release, develop and main. This way you can keep track of every deployed version on all your environments (TEST, INT, QA, PROD).
 - Github workflow to create branches according to naming rules
+- Automatic check if a PR is allowed by checking source and target branch names
 
 ---
 
