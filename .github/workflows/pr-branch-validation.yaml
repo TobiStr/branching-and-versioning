@@ -49,3 +49,36 @@ jobs:
           else
             echo "✅ Branch rule passed."
           fi
+
+      - name: Comment on PR if validation fails
+        if: failure()
+        run: |
+          HEAD="${{ github.event.pull_request.head.ref }}"
+          BASE="${{ github.event.pull_request.base.ref }}"
+
+          RULES=""
+          while IFS= read -r line; do
+            target="${line%%:*}"
+            sources="${line#*:}"
+            IFS=',' read -ra source_array <<< "$sources"
+            for source in "${source_array[@]}"; do
+              RULES+="$source --> $target"$'\n'
+            done
+          done <<< "${PR_RULES}"
+
+          COMMENT_BODY="❌ This PR from \`$HEAD\` into \`$BASE\` is not allowed by the branch rules.
+
+          **Allowed PR branch combinations:**
+          \`\`\`
+          $RULES
+          \`\`\`
+          "
+
+          echo "Posting the following comment:"
+          echo "$COMMENT_BODY"
+
+          curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg body "$COMMENT_BODY" '{ body: $body }')" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
