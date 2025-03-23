@@ -1,0 +1,94 @@
+name: Weekly Branch Deletion Check
+
+on:
+  schedule:
+    - cron: '0 2 * * 1' # Every Monday at 2:00 AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  STALE_AFTER_DAYS: 365  # You can change this to configure the "stale after" threshold
+
+jobs:
+  check-branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout all branches
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get default branch
+        id: default
+        run: |
+          DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q '.defaultBranchRef.name')
+          echo "default_branch=$DEFAULT_BRANCH" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find branches eligible for deletion
+        id: branches
+        run: |
+          CUTOFF_DATE=$(date -d "${STALE_AFTER_DAYS} days ago" --iso-8601=seconds)
+          echo "Checking for branches with no commits since: $CUTOFF_DATE"
+
+          git for-each-ref --format="%(refname:short)" refs/remotes/origin/ | while read branch; do
+            branch=${branch#origin/}
+            [ "$branch" = "${{ steps.default.outputs.default_branch }}" ] && continue
+
+            last_commit_date=$(git log -1 --format="%cI" "origin/$branch") || continue
+
+            if [[ "$last_commit_date" < "$CUTOFF_DATE" ]]; then
+              if git merge-base --is-ancestor "origin/$branch" "origin/${{ steps.default.outputs.default_branch }}"; then
+                echo "::group::Candidate: $branch"
+                echo "Last commit: $last_commit_date"
+                echo "::endgroup::"
+
+                echo "$branch" >> stale-branches.txt
+              fi
+            fi
+          done
+
+          if [[ -f stale-branches.txt ]]; then
+            echo "branches_to_check<<EOF" >> $GITHUB_OUTPUT
+            cat stale-branches.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "No branches found for deletion."
+          fi
+
+      - name: Create 'Check for deletion' PRs
+        if: steps.branches.outputs.branches_to_check != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "${{ steps.branches.outputs.branches_to_check }}" | while read branch; do
+            TIMESTAMP=$(date +%s)
+            BRANCH_NAME="check-deletion-trigger-${branch//\//-}-$TIMESTAMP"
+
+            git checkout "origin/$branch" -b temp-check-$branch
+            echo "🧹 This branch is being evaluated for deletion." > .deletion-check.md
+            echo "" >> .deletion-check.md
+            echo "### Why this PR exists" >> .deletion-check.md
+            echo "- This branch has had no commits in over **${STALE_AFTER_DAYS} days**." >> .deletion-check.md
+            echo "- It has already been **merged into the default branch \`${{ steps.default.outputs.default_branch }}\`**." >> .deletion-check.md
+            echo "" >> .deletion-check.md
+            echo "This automated PR flags the branch as a **candidate for deletion**. Please review this branch and decide whether it can be safely deleted." >> .deletion-check.md
+            echo "" >> .deletion-check.md
+            echo "_This PR was created automatically by a GitHub Action._" >> .deletion-check.md
+
+            git add .deletion-check.md
+            git commit -m "Check for deletion"
+            git push origin HEAD:$BRANCH_NAME
+
+            gh pr create \
+              --title "Check for deletion" \
+              --body "$(cat .deletion-check.md)" \
+              --base "$branch" \
+              --head "$BRANCH_NAME" \
+              --label "cleanup"
+          done
