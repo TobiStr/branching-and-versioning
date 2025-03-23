@@ -10,7 +10,7 @@ jobs:
     env:
       PR_RULES: |
         develop:main,feature/*
-        feature/*:develop,feature/*
+        feature/*:develop
         release/*:develop,fix/*
         main:release/*,hotfix/*
     steps:
