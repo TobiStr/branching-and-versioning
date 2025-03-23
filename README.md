@@ -82,6 +82,8 @@ GitVersion is configured with the following key options:
 - `.gitversion.yml`: Full configuration file for GitVersion.
 - Sample branches demonstrating version output.
 - Git tags representing semantic releases.
+- Automatic github workflows, that tag each push to release, develop and main. This way you can keep track of every deployed version on all your environments (TEST, INT, QA, PROD).
+- Github workflow to create branches according to naming rules
 
 ---
 
