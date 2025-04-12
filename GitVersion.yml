@@ -70,7 +70,7 @@ branches:
     is-main-branch: false
     pre-release-weight: 30000
   feature:
-    mode: ManualDeployment
+    mode: ContinuousDelivery
     label: "TEST-{BranchName}"
     increment: Inherit
     prevent-increment:
@@ -88,7 +88,7 @@ branches:
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
-    label: PullRequest
+    label: PullRequest-
     increment: Inherit
     prevent-increment:
       of-merged-branch: false

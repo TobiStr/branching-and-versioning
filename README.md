@@ -2,6 +2,8 @@
 
 This repository demonstrates a **custom GitVersion setup** to support a structured branching strategy and automated semantic versioning. It's designed for teams looking to streamline release pipelines, ensure consistent versioning, and manage branching flows effectively.
 
+It is the showcase for my Blog Article on Medium: [Enterprise Grade Branching and Versioning](https://medium.com/gitconnected/enterprise-grade-branching-versioning-that-actually-works-f6f1f006013c)
+
 ---
 
 ## 🔀 Branching Strategy
